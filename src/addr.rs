@@ -1,6 +1,9 @@
 use std::path::PathBuf;
 
-use autoschematic_core::connector::ResourceAddress;
+use autoschematic_core::{
+    connector::ResourceAddress,
+    error_util::{invalid_addr, invalid_addr_path},
+};
 
 #[derive(Debug, Clone)]
 pub struct LightAddress {}
@@ -10,14 +13,14 @@ impl ResourceAddress for LightAddress {
         PathBuf::from("lighting/patio/lights.ron")
     }
 
-    fn from_path(path: &std::path::Path) -> Result<Option<Self>, anyhow::Error>
+    fn from_path(path: &std::path::Path) -> Result<Self, anyhow::Error>
     where
         Self: Sized,
     {
         if path == PathBuf::from("lighting/patio/lights.ron") {
-            Ok(Some(LightAddress {}))
+            Ok(LightAddress {})
         } else {
-            Ok(None)
+            Err(invalid_addr_path(path))
         }
     }
 }
