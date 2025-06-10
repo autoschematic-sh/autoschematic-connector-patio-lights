@@ -6,7 +6,8 @@ use std::{
 use async_trait::async_trait;
 use autoschematic_core::{
     connector::{
-        Connector, ConnectorOp, ConnectorOutbox, GetResourceOutput, OpExecOutput, OpPlanOutput, Resource, ResourceAddress,
+        Connector, ConnectorOp, ConnectorOutbox, FilterOutput, GetResourceOutput, OpExecOutput, OpPlanOutput, Resource,
+        ResourceAddress,
     },
     connector_op,
     diag::DiagnosticOutput,
@@ -19,7 +20,7 @@ use anyhow::Context;
 use crate::{addr::LightAddress, op::LightConnectorOp, resource::LightState};
 
 pub struct LightConnector {
-    url: String,
+    url:    String,
     prefix: PathBuf,
 }
 
@@ -29,18 +30,7 @@ impl Connector for LightConnector {
     where
         Self: Sized,
     {
-        eprintln!("LIGHTCONNECTOR!");
-        for v in std::env::vars() {
-            eprintln!("{} = {}!", v.0, v.1);
-        }
         let url = std::env::var("AUTOSCHEMATIC_LIGHT_URL").unwrap_or_default();
-        eprintln!("LIGHTCONNECTOR!");
-        // if name != "patio" {
-        //     return Err(AutoschematicError {
-        //         kind: AutoschematicErrorType::InvalidConnectorString(name.to_string()),
-        //     }
-        //     .into());
-        // }
 
         Ok(Box::new(LightConnector {
             url,
@@ -48,12 +38,15 @@ impl Connector for LightConnector {
         }))
     }
 
-    // TODO Some kind of freak shit is going on here
-    async fn filter(&self, addr: &Path) -> Result<bool, anyhow::Error> {
+    async fn init(&self) -> anyhow::Result<()> {
+        Ok(())
+    }
+
+    async fn filter(&self, addr: &Path) -> Result<FilterOutput, anyhow::Error> {
         if let Ok(_addr) = LightAddress::from_path(addr) {
-            Ok(true)
+            Ok(FilterOutput::Resource)
         } else {
-            Ok(false)
+            Ok(FilterOutput::None)
         }
     }
 
