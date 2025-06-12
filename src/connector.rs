@@ -1,7 +1,4 @@
-use std::{
-    ffi::{OsStr, OsString},
-    path::{Path, PathBuf},
-};
+use std::path::{Path, PathBuf};
 
 use async_trait::async_trait;
 use autoschematic_core::{
@@ -66,15 +63,15 @@ impl Connector for LightConnector {
     async fn plan(
         &self,
         addr: &Path,
-        current: Option<OsString>,
-        desired: Option<OsString>,
+        current: Option<Vec<u8>>,
+        desired: Option<Vec<u8>>,
     ) -> Result<Vec<OpPlanOutput>, anyhow::Error> {
         let addr = LightAddress::from_path(addr)?;
 
         match (current, desired) {
             (Some(current), Some(desired)) => {
-                let _current = LightState::from_os_str(&addr, &current)?;
-                let desired = LightState::from_os_str(&addr, &desired)?;
+                let _current = LightState::from_bytes(&addr, &current)?;
+                let desired = LightState::from_bytes(&addr, &desired)?;
 
                 Ok(vec![connector_op!(
                     LightConnectorOp::SetLights(desired),
@@ -105,13 +102,13 @@ impl Connector for LightConnector {
         }
     }
 
-    async fn eq(&self, addr: &Path, a: &OsStr, b: &OsStr) -> Result<bool, anyhow::Error> {
+    async fn eq(&self, addr: &Path, a: &[u8], b: &[u8]) -> Result<bool, anyhow::Error> {
         let _addr = LightAddress::from_path(addr)?;
 
         return ron_check_eq::<LightState>(a, b);
     }
 
-    async fn diag(&self, addr: &Path, a: &OsStr) -> Result<DiagnosticOutput, anyhow::Error> {
+    async fn diag(&self, addr: &Path, a: &[u8]) -> Result<DiagnosticOutput, anyhow::Error> {
         let _addr = LightAddress::from_path(addr)?;
 
         return ron_check_syntax::<LightState>(a);
