@@ -56,7 +56,6 @@ impl Connector for LightConnector {
         let res = reqwest::get(format!("{}/api/lights/status", self.url)).await?;
         // eprintln!("{:?}", res.text().await);
         let light_state: LightState = res.json().await?;
-        eprintln!("{:?}", light_state);
         return get_resource_output!(light_state);
     }
 
@@ -73,12 +72,15 @@ impl Connector for LightConnector {
                 let _current = LightState::from_bytes(&addr, &current)?;
                 let desired = LightState::from_bytes(&addr, &desired)?;
 
+                let colored_light_string: Vec<String> =
+                    desired.lights.iter().map(|s| s.to_colored_string().to_string()).collect();
+
                 Ok(vec![connector_op!(
                     LightConnectorOp::SetLights(desired),
-                    format!("Set lights")
+                    format!("Set the lights to {}", colored_light_string.join(", "))
                 )])
             }
-            _ => Ok(Vec::new()),
+            other => Ok(Vec::new()),
         }
     }
 

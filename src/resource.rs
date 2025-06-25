@@ -2,6 +2,7 @@ use autoschematic_core::{
     connector::Resource,
     util::{PrettyConfig, RON},
 };
+use colored::{ColoredString, Colorize};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
@@ -19,7 +20,7 @@ pub enum LightColour {
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct LightState {
-    lights: [LightColour; 7],
+    pub lights: [LightColour; 7],
 }
 
 impl Resource for LightState {
@@ -33,7 +34,20 @@ impl Resource for LightState {
     {
         let s = str::from_utf8(s)?;
         let state: LightState = RON.from_str(s)?;
-        eprintln!("Lighstate::from_bytes()");
         Ok(state)
+    }
+}
+
+impl LightColour {
+    pub fn to_colored_string(&self) -> ColoredString {
+        match self {
+            LightColour::Red => "red".red(),
+            LightColour::Orange => "orange".yellow(),
+            LightColour::Yellow => "yellow".bright_yellow(),
+            LightColour::Green => "green".green(),
+            LightColour::Blue => "blue".blue(),
+            LightColour::Indigo => "indigo".purple(),
+            LightColour::Violet => "violet".bright_purple(),
+        }
     }
 }
