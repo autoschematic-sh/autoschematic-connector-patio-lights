@@ -1,4 +1,4 @@
-use std::path::{Path, PathBuf};
+use std::{path::{Path, PathBuf}, sync::Arc};
 
 use async_trait::async_trait;
 use autoschematic_core::{
@@ -23,13 +23,13 @@ pub struct LightConnector {
 
 #[async_trait]
 impl Connector for LightConnector {
-    async fn new(name: &str, prefix: &Path, outbox: ConnectorOutbox) -> Result<Box<dyn Connector>, anyhow::Error>
+    async fn new(name: &str, prefix: &Path, outbox: ConnectorOutbox) -> Result<Arc<dyn Connector>, anyhow::Error>
     where
         Self: Sized,
     {
         let url = std::env::var("AUTOSCHEMATIC_LIGHT_URL").unwrap_or_default();
 
-        Ok(Box::new(LightConnector {
+        Ok(Arc::new(LightConnector {
             url,
             prefix: prefix.into(),
         }))
