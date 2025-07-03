@@ -27,7 +27,7 @@ impl Connector for LightConnector {
     where
         Self: Sized,
     {
-        let url = std::env::var("AUTOSCHEMATIC_LIGHT_URL").unwrap_or_default();
+        let url = std::env::var("AUTOSCHEMATIC_LIGHT_URL").unwrap_or(String::from("https://backend.autoschematic.sh"));
 
         Ok(Arc::new(LightConnector {
             url,

@@ -1,6 +1,6 @@
 [package]
 name = "autoschematic-connector-patio-lights"
-version = "0.6.0"
+version = "0.6.1"
 edition = "2024"
 license = "MIT"
 description = "Mess with the lighst on https://autoschematic.sh"
@@ -9,7 +9,7 @@ description = "Mess with the lighst on https://autoschematic.sh"
 tokio = { version = "1.45.0", features = ["rt-multi-thread"] }
 anyhow = "1.0.95"
 async-trait = "0.1.86"
-autoschematic-core = { path = "../../autoschematic/autoschematic-core", version = "0.6.0" }
+autoschematic-core = { path = "../../autoschematic/autoschematic-core", version = "0.6.1" }
 serde = { version = "1.0.217", features = ["derive"] }
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
