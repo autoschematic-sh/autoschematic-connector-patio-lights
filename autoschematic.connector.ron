@@ -1,0 +1,6 @@
+ConnectorManifest(
+    shortname: "patio",
+    protocol: "binary-tarpc",
+    description: "Manages the colored lights on the top-left of autoschematic.sh - no auth required!",
+    stability: "stable"
+)
